@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lluvia de Emoticonos</title>
+    <style>
+        body {
+            background-color: black;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        .emoji {
+            position: absolute;
+            top: -50px;
+            font-size: 2rem;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+        @keyframes sparkle {
+            0% { text-shadow: 0 0 5px rgba(255, 215, 0, 0.8), 0 0 10px rgba(255, 165, 0, 0.5); }
+            50% { text-shadow: 0 0 10px rgba(255, 255, 0, 1), 0 0 20px rgba(255, 140, 0, 0.7); }
+            100% { text-shadow: 0 0 5px rgba(255, 215, 0, 0.8), 0 0 10px rgba(255, 165, 0, 0.5); }
+        }
+        .emoji {
+            animation: fall linear infinite, sparkle 1s infinite alternate;
+        }
+    </style>
+</head>
+<body>
+    <!-- Elemento de audio para reproducir el MP3 -->
+    <audio id="background-music" src="oli.mp3"></audio>
+
+    <script>
+        const emojis = ['😘', '🥰', '😍', '🫶', '🥺'];
+        function createEmoji() {
+            const emoji = document.createElement('div');
+            emoji.classList.add('emoji');
+            emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            emoji.style.left = Math.random() * 100 + 'vw';
+            emoji.style.fontSize = Math.random() * 2 + 1 + 'rem';
+            emoji.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(emoji);
+            setTimeout(() => {
+                emoji.remove();
+            }, 6000);
+        }
+        setInterval(createEmoji, 200);
+
+        // Reproducir el audio al hacer clic en cualquier parte de la pantalla
+        document.addEventListener('click', () => {
+            const audio = document.getElementById('background-music');
+            audio.play();
+        });
+    </script>
+</body>
+</html>

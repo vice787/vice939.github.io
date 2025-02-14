@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Heart Animation</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+            position: relative;
+            margin: 0;
+            cursor: pointer; /* Cambia el cursor para indicar que se puede hacer clic */
+        }
+        .heart-container {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            transform-origin: center;
+            animation: heartbeat 1s infinite ease-in-out;
+            position: relative;
+        }
+        .pixel {
+            width: var(--size, 20px);
+            height: var(--size, 20px);
+            transition: background-color 1s;
+            position: relative;
+        }
+        .pixel.filled {
+            opacity: 0;
+            animation: fadeIn 1s infinite alternate;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        .ghost {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0.5;
+            transform-origin: center;
+            animation: ghostEffect 1s infinite ease-in-out;
+            filter: blur(5px);
+        }
+        @keyframes ghostEffect {
+            0% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0; transform: scale(1.3); }
+            100% { opacity: 0; transform: scale(1.5); }
+        }
+    </style>
+</head>
+<body>
+    <div class="heart-container" id="heart"></div>
+    <audio id="background-music" loop>
+        <source src="test1.mp3" type="audio/mpeg">
+        Tu navegador no soporta la reproducción de audio.
+    </audio>
+    <script>
+        const heartPattern = [
+            [0,1,0,0,0,1,0],
+            [1,1,1,0,1,1,1],
+            [1,1,1,1,1,1,1],
+            [0,1,1,1,1,1,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,1,0,0,0]
+        ];
+        const heartContainer = document.getElementById('heart');
+        const audio = document.getElementById('background-music');
+        
+        function getRandomColor() {
+            return `rgb(${Math.random()*255}, ${Math.random()*255}, ${Math.random()*255})`;
+        }
+        
+        function createHeart(size) {
+            document.documentElement.style.setProperty('--size', `${size}px`);
+            heartContainer.innerHTML = '';
+            
+            heartPattern.forEach(row => {
+                row.forEach(pixel => {
+                    const div = document.createElement('div');
+                    div.classList.add('pixel');
+                    if (pixel === 1) {
+                        div.classList.add('filled');
+                        div.style.backgroundColor = getRandomColor();
+                        setInterval(() => {
+                            div.style.backgroundColor = getRandomColor();
+                        }, 2000);
+                        div.style.animationDelay = `${Math.random()}s`;
+                    } else {
+                        div.style.opacity = '0';
+                        div.style.backgroundColor = 'transparent';
+                    }
+                    heartContainer.appendChild(div);
+                });
+            });
+            
+            // Crear el efecto ghost
+            const ghost = heartContainer.cloneNode(true);
+            ghost.classList.add('ghost');
+            document.body.appendChild(ghost);
+        }
+        createHeart(60); // Cambia el tamaño del pixel modificando este valor
+
+        // Reproducir audio al hacer clic en cualquier parte de la página
+        document.body.addEventListener('click', () => {
+            audio.play().catch(error => {
+                console.log("La reproducción automática fue bloqueada. Haz clic para reproducir.");
+            });
+        });
+    </script>
+</body>
+</html>
